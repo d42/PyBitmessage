@@ -306,20 +306,19 @@ class Create(Screen):
 
     def send(self):
         """Send message from one address to another."""
-        fromAddress = self.ids.spinner_id.text
-        # For now we are using static address i.e we are not using recipent field value.
-        toAddress = "BM-2cWyUfBdY2FbgyuCb7abFZ49JYxSzUhNFe"
+        sender = self.ids.sender.text
+        recipient = self.ids.recipient.text
         message = self.ids.message.text
         subject = self.ids.subject.text
         encoding = 3
         print("message: ", self.ids.message.text)
         sendMessageToPeople = True
         if sendMessageToPeople:
-            if toAddress != '':
+            if recipient != '':
                 status, addressVersionNumber, streamNumber, ripe = decodeAddress(
-                    toAddress)
+                    recipient)
                 if status == 'success':
-                    toAddress = addBMIfNotPresent(toAddress)
+                    recipient = addBMIfNotPresent(recipient)
 
                     if addressVersionNumber > 4 or addressVersionNumber <= 1:
                         print("addressVersionNumber > 4 or addressVersionNumber <= 1")
@@ -334,9 +333,9 @@ class Create(Screen):
                     sqlExecute(
                         '''INSERT INTO sent VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
                         '',
-                        toAddress,
+                        recipient,
                         ripe,
-                        fromAddress,
+                        sender,
                         subject,
                         message,
                         ackdata,
@@ -349,20 +348,18 @@ class Create(Screen):
                         encoding,
                         BMConfigParser().getint('bitmessagesettings', 'ttl'))
                     toLabel = ''
-                    queues.workerQueue.put(('sendmessage', toAddress))
+                    queues.workerQueue.put(('sendmessage', recipient))
                     print("sqlExecute successfully #####    ##################")
                     self.ids.message.text = ''
-                    self.ids.spinner_id.text = '<select>'
                     self.ids.subject.text = ''
-                    self.ids.recipent.text = ''
+                    self.ids.recipient.text = ''
                     return None
 
     def cancel(self):
         """Reset values for send message."""
         self.ids.message.text = ''
-        self.ids.spinner_id.text = '<select>'
         self.ids.subject.text = ''
-        self.ids.recipent.text = ''
+        self.ids.recipient.text = ''
         return None
 
 

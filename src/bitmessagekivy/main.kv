@@ -203,7 +203,7 @@ BoxLayout:
                 size_hint: 1,1
                 pos_hint: {"x":0,"top":1.}
                 pos: 10,10
-                id: spinner_id
+                id: sender
                 text: app.showmeaddresses(name='text')
                 values: app.showmeaddresses(name='values')
 
@@ -214,7 +214,7 @@ BoxLayout:
                 text: 'TO'
                 color: 0,0,0,1
             TextInput:
-                id: recipent
+                id: recipient
                 hint_text: 'To'
 
         BoxLayout:
