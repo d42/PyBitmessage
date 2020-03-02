@@ -188,7 +188,7 @@ class Inbox(Screen):
                 'data_index': 1,
                 'index': 1,
                 'height': 48,
-                'text': "yet no message for this account!!!!!!!!!!!!!"}
+                'text': "No incoming for this account."}
             ]
 
 
@@ -239,7 +239,7 @@ class Sent(Screen):
                 'data_index': 1,
                 'index': 1,
                 'height': 48,
-                'text': "yet no message for this account!!!!!!!!!!!!!"}
+                'text': "No sent messages for this account"}
             ]
 
 
@@ -282,7 +282,7 @@ class Trash(Screen):
                 'data_index': 1,
                 'index': 1,
                 'height': 48,
-                'text': "yet no message for this account!!!!!!!!!!!!!"}
+                'text': "No deleted messages for this account"}
             ]
 
 
