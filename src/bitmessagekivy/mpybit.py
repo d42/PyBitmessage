@@ -65,7 +65,8 @@ class NavigateApp(App, TextInput):
     def showmeaddresses(name="text"):
         """Show the addresses in spinner to make as dropdown."""
         if name == "text":
-            return BMConfigParser().addresses()[0]
+            addrs = BMConfigParser().addresses()
+            return addrs[0] if addrs else ''
         elif name == "values":
             return BMConfigParser().addresses()
 
@@ -129,7 +130,10 @@ class NavigateApp(App, TextInput):
     @staticmethod
     def getCurrentAccount():
         """It uses to get current account label."""
-        return BMConfigParser().get(state.association, 'label') + '({})'.format(state.association)
+        account_name = BMConfigParser().safeGet(state.association, 'label')
+        if account_name is None:
+            return "No account"
+        return account_name + '({})'.format(state.association)
 
 
 class Navigator(NavigationDrawer):
