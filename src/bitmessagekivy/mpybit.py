@@ -192,7 +192,7 @@ class Inbox(Screen):
             ]
 
 
-class Page(Screen):
+class Message(Screen):
     pass
 
 
