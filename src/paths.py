@@ -54,6 +54,11 @@ def lookupAppdataFolder():
             os.environ['APPDATA'].decode(
                 sys.getfilesystemencoding(), 'ignore'), APPNAME
         ) + os.path.sep
+    elif  'ANDROID_ARGUMENT' in os.environ:
+        dataFolder = os.path.join(
+                os.environ['ANDROID_APP_PATH'],
+                APPNAME
+        ) + os.path.sep
     else:
         try:
             dataFolder = os.path.join(os.environ['XDG_CONFIG_HOME'], APPNAME)

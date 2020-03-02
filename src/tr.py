@@ -32,6 +32,9 @@ def _translate(context, text, disambiguation=None, encoding=None, n=None):
 
 def translateText(context, text, n=None):
     """Translate text in context"""
+
+    if state.kivy:
+        return text  # TODO: multi-framework translation
     try:
         enableGUI = state.enableGUI
     except AttributeError:  # inside the plugin
