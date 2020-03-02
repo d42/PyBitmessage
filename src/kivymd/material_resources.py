@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
+
+"""
+Material Resources
+==================
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+"""
+
 from kivy import platform
 from kivy.core.window import Window
 from kivy.metrics import dp
+
 from kivymd import fonts_path
 
 # Feel free to override this const if you're designing for a device such as
 # a GNU/Linux tablet.
+DEVICE_IOS = platform == "ios" or platform == "macosx"
 if platform != "android" and platform != "ios":
     DEVICE_TYPE = "desktop"
 elif Window.width >= dp(600) and Window.height >= dp(600):
@@ -45,6 +61,6 @@ FONTS = [
     },
     {
         "name": "Icons",
-        "fn_regular": fonts_path + 'Material-Design-Iconic-Font.ttf'
+        "fn_regular": fonts_path + 'materialdesignicons-webfont.ttf'
     }
 ]

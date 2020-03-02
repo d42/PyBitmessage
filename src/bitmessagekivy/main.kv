@@ -19,7 +19,7 @@
         text: "inbox"
         on_release: app.root.ids.scr_mngr.current = 'inbox'
     NavigationDrawerIconButton:
-        icon: 'mail-send'
+        icon: 'send'
         text: "sent"
         on_release: app.root.ids.scr_mngr.current = 'sent'
     NavigationDrawerIconButton:
@@ -30,15 +30,11 @@
         icon: 'email'
         text: "drafts"
         on_release: app.root.ids.scr_mngr.current = 'dialog'
-    NavigationDrawerIconButton:
-        icon: 'markunread-mailbox'
-        text: "test"
-        on_release: app.root.ids.scr_mngr.current = 'test'
     NavigationDrawerIconButton: 
         text: "new identity"
-        icon:'accounts-add'
+        icon:'account-plus'
         on_release: app.root.ids.scr_mngr.current = 'newidentity'
-    
+
 BoxLayout:
     orientation: 'vertical'
     Toolbar:
@@ -66,8 +62,6 @@ BoxLayout:
             id:sc3
         Dialog:
             id:sc4
-        Test:
-            id:sc5
         Create:
             id:sc6
         NewIdentity:
@@ -191,11 +185,6 @@ BoxLayout:
     name: 'dialog'
     Label:
         text:"I have a good dialox box"
-        color: 0,0,0,1
-<Test>:
-    name: 'test'
-    Label:
-        text:"I am in test"
         color: 0,0,0,1
 
 <Create>:

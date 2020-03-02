@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 
+"""
+Selection Controls
+==================
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+
+`Material Design spec, Selection controls <https://material.io/design/components/selection-controls.html>`
+"""
+
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty
 from kivy.uix.behaviors import ToggleButtonBehavior
@@ -9,68 +24,79 @@ from kivy.properties import AliasProperty, BooleanProperty
 from kivy.metrics import dp, sp
 from kivy.animation import Animation
 from kivy.utils import get_color_from_hex
+
 from kivymd.color_definitions import colors
 from kivymd.icon_definitions import md_icons
 from kivymd.theming import ThemableBehavior
-from kivymd.elevationbehavior import RoundElevationBehavior
+from kivymd.elevationbehavior import CircularElevationBehavior
 from kivymd.ripplebehavior import CircularRippleBehavior
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.widget import Widget
 
 Builder.load_string('''
-<MDCheckbox>:
+<MDCheckbox>
     canvas:
         Clear
         Color:
-            rgba:         self.color
+            rgba: self.color
         Rectangle:
-            texture:    self.texture
-            size:        self.texture_size
-            pos:        int(self.center_x - self.texture_size[0] / 2.), int(self.center_y - self.texture_size[1] / 2.)
+            texture: self.texture
+            size: self.texture_size
+            pos:
+                int(self.center_x - self.texture_size[0] / 2.),\
+                int(self.center_y - self.texture_size[1] / 2.)
 
-    text:             self._radio_icon if self.group else self._checkbox_icon
-    font_name:        'Icons'
-    font_size:        sp(24)
-    color:            self.theme_cls.primary_color if self.active else self.theme_cls.secondary_text_color
-    halign:            'center'
-    valign:            'middle'
+    text: self._radio_icon if self.group else self._checkbox_icon
+    font_name: 'Icons'
+    font_size: sp(24)
+    color:
+        self.theme_cls.primary_color if self.active\
+        else self.theme_cls.secondary_text_color
+    halign: 'center'
+    valign: 'middle'
 
-<Thumb>:
-    color:        1, 1, 1, 1
+
+<Thumb>
+    color: 1, 1, 1, 1
     canvas:
         Color:
-            rgba:        self.color
+            rgba: self.color
         Ellipse:
             size: self.size
-            pos:        self.pos
+            pos: self.pos
 
-<MDSwitch>:
+
+<MDSwitch>
     canvas.before:
         Color:
-            rgba: self._track_color_disabled if self.disabled else \
-            (self._track_color_active if self.active else self._track_color_normal)
+            rgba:
+                self._track_color_disabled if self.disabled else\
+                (self._track_color_active if self.active\
+                else self._track_color_normal)
         Ellipse:
-            size:             dp(16), dp(16)
-            pos:            self.x, self.center_y - dp(8)
-            angle_start:    180
-            angle_end:        360
+            size: dp(16), dp(16)
+            pos: self.x, self.center_y - dp(8)
+            angle_start: 180
+            angle_end: 360
         Rectangle:
-            size:            self.width - dp(16), dp(16)
-            pos:            self.x + dp(8), self.center_y - dp(8)
+            size: self.width - dp(16), dp(16)
+            pos: self.x + dp(8), self.center_y - dp(8)
         Ellipse:
-            size:            dp(16), dp(16)
-            pos:            self.right - dp(16), self.center_y - dp(8)
-            angle_start:    0
-            angle_end:        180
+            size: dp(16), dp(16)
+            pos: self.right - dp(16), self.center_y - dp(8)
+            angle_start: 0
+            angle_end: 180
+
     on_release: thumb.trigger_action()
 
     Thumb:
-        id:            thumb
-        size_hint:    None, None
-        size:        dp(24), dp(24)
-        pos:        root._thumb_pos
-        color:        root.thumb_color_disabled if root.disabled else \
-                    (root.thumb_color_down if root.active else root.thumb_color)
+        id: thumb
+        size_hint: None, None
+        size: dp(24), dp(24)
+        pos: root._thumb_pos
+        color:
+            root.thumb_color_disabled if root.disabled else\
+            (root.thumb_color_down if root.active else root.thumb_color)
         elevation:    4 if root.active else 2
         on_release: setattr(root, 'active', not root.active)
 ''')
@@ -81,16 +107,17 @@ class MDCheckbox(ThemableBehavior, CircularRippleBehavior,
     active = BooleanProperty(False)
 
     _checkbox_icon = StringProperty(
-        u"{}".format(md_icons['square-o']))
-    _radio_icon = StringProperty(u"{}".format(md_icons['circle-o']))
-    _icon_active = StringProperty(u"{}".format(md_icons['check-square']))
+        u'{}'.format(md_icons['checkbox-blank-outline']))
+    _radio_icon = StringProperty(u'{}'.format(
+        md_icons['checkbox-blank-circle-outline']))
+    _icon_active = StringProperty(u'{}'.format(md_icons['checkbox-marked']))
 
     def __init__(self, **kwargs):
-        super(MDCheckbox, self).__init__(**kwargs)
-        self.register_event_type('on_active')
         self.check_anim_out = Animation(font_size=0, duration=.1, t='out_quad')
         self.check_anim_in = Animation(font_size=sp(24), duration=.1,
                                        t='out_quad')
+        super(MDCheckbox, self).__init__(**kwargs)
+        self.register_event_type('on_active')
         self.check_anim_out.bind(
             on_complete=lambda *x: self.check_anim_in.start(self))
 
@@ -98,22 +125,25 @@ class MDCheckbox(ThemableBehavior, CircularRippleBehavior,
         if self.state == 'down':
             self.check_anim_in.cancel(self)
             self.check_anim_out.start(self)
-            self._radio_icon = u"{}".format(md_icons['dot-circle'])
-            self._checkbox_icon = u"{}".format(md_icons['check-square'])
+            self._radio_icon = u'{}'.format(
+                md_icons['checkbox-marked-circle-outline'])
+            self._checkbox_icon = u'{}'.format(
+                md_icons['checkbox-marked-outline'])
             self.active = True
         else:
             self.check_anim_in.cancel(self)
             self.check_anim_out.start(self)
-            self._radio_icon = u"{}".format(md_icons['circle-o'])
-            self._checkbox_icon = u"{}".format(
-                md_icons['square-o'])
+            self._radio_icon = u'{}'.format(
+                md_icons['checkbox-blank-circle-outline'])
+            self._checkbox_icon = u'{}'.format(
+                md_icons['checkbox-blank-outline'])
             self.active = False
 
     def on_active(self, instance, value):
         self.state = 'down' if value else 'normal'
 
 
-class Thumb(RoundElevationBehavior, CircularRippleBehavior, ButtonBehavior,
+class Thumb(CircularElevationBehavior, CircularRippleBehavior, ButtonBehavior,
             Widget):
     ripple_scale = NumericProperty(2)
 

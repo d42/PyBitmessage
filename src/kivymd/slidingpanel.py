@@ -1,21 +1,36 @@
 # -*- coding: utf-8 -*-
+
+"""
+Sliding Panel
+=============
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+"""
+
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.metrics import dp
-from kivy.properties import OptionProperty, NumericProperty, StringProperty, \
-    BooleanProperty, ListProperty
+from kivy.properties import OptionProperty, NumericProperty, StringProperty,\
+    ListProperty
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.relativelayout import RelativeLayout
 
-Builder.load_string("""
-#: import Window kivy.core.window.Window
+Builder.load_string('''
+#:import Window kivy.core.window.Window
+
+
 <SlidingPanel>
     orientation: 'vertical'
     size_hint_x: None
     width: dp(320)
     x: -1 * self.width if self.side == 'left' else Window.width
+
 
 <PanelShadow>
     canvas:
@@ -23,7 +38,7 @@ Builder.load_string("""
             rgba: root.color
         Rectangle:
             size: root.size
-""")
+''')
 
 
 class PanelShadow(BoxLayout):
@@ -31,8 +46,8 @@ class PanelShadow(BoxLayout):
 
 
 class SlidingPanel(BoxLayout):
-    anim_length_close = NumericProperty(0.3)
-    anim_length_open = NumericProperty(0.3)
+    anim_length_close = NumericProperty(.3)
+    anim_length_open = NumericProperty(.3)
     animation_t_open = StringProperty('out_sine')
     animation_t_close = StringProperty('out_sine')
     side = OptionProperty('left', options=['left', 'right'])
@@ -42,8 +57,8 @@ class SlidingPanel(BoxLayout):
     def __init__(self, **kwargs):
         super(SlidingPanel, self).__init__(**kwargs)
         self.shadow = PanelShadow()
-        Clock.schedule_once(lambda x: Window.add_widget(self.shadow,89), 0)
-        Clock.schedule_once(lambda x: Window.add_widget(self,90), 0)
+        Clock.schedule_once(lambda x: Window.add_widget(self.shadow, 89), 0)
+        Clock.schedule_once(lambda x: Window.add_widget(self, 90), 0)
 
     def toggle(self):
         Animation.stop_all(self, 'x')
@@ -69,7 +84,7 @@ class SlidingPanel(BoxLayout):
             else:
                 target_x = Window.width - self.width
             Animation(duration=self.anim_length_open, t=self.animation_t_open,
-                      color=[0, 0, 0, 0.5]).start(self.shadow)
+                      color=[0, 0, 0, .5]).start(self.shadow)
             self._get_main_animation(duration=self.anim_length_open,
                                      t=self.animation_t_open,
                                      x=target_x,
@@ -86,7 +101,7 @@ class SlidingPanel(BoxLayout):
             return True
 
     def on_touch_up(self, touch):
+        super(SlidingPanel, self).on_touch_up(touch)
         if not self.collide_point(touch.x, touch.y) and self._open:
             self.toggle()
-            return True
-        super(SlidingPanel, self).on_touch_up(touch)
+        return True

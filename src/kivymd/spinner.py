@@ -1,14 +1,26 @@
 # -*- coding: utf-8 -*-
 
+"""
+Spinner
+=======
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+"""
+
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ListProperty, BooleanProperty
 from kivy.animation import Animation
 from kivymd.theming import ThemableBehavior
-from kivy.clock import Clock
 
 Builder.load_string('''
-<MDSpinner>:
+<MDSpinner>
     canvas.before:
         PushMatrix
         Rotate:
@@ -18,11 +30,11 @@ Builder.load_string('''
         Color:
             rgba: self.color
             a: self._alpha
-        Line:
-            circle: self.center_x, self.center_y, self.width / 2, \
+        SmoothLine:
+            circle: self.center_x, self.center_y, self.width / 2,\
             self._angle_start, self._angle_end
             cap: 'square'
-            width: dp(2)
+            width: dp(2.25)
     canvas.after:
         PopMatrix
 
@@ -69,11 +81,11 @@ class MDSpinner(ThemableBehavior, Widget):
 
     def __init__(self, **kwargs):
         super(MDSpinner, self).__init__(**kwargs)
-        Clock.schedule_interval(self._update_color, 5)
         self.color = self.theme_cls.primary_color
         self._alpha_anim_in = Animation(_alpha=1, duration=.8, t='out_quad')
         self._alpha_anim_out = Animation(_alpha=0, duration=.3, t='out_quad')
         self._alpha_anim_out.bind(on_complete=self._reset)
+        self.theme_cls.bind(primary_color=self._update_color)
 
         if self.determinate:
             self._start_determinate()
@@ -94,8 +106,8 @@ class MDSpinner(ThemableBehavior, Widget):
         _angle_start_anim = Animation(_angle_end=360,
                                       duration=self.determinate_time,
                                       t='in_out_quad')
-        _angle_start_anim.bind(on_complete=lambda *x: \
-            self._alpha_anim_out.start(self))
+        _angle_start_anim.bind(
+            on_complete=lambda *x: self._alpha_anim_out.start(self))
 
         _angle_start_anim.start(self)
 

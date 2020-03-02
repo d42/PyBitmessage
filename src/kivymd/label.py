@@ -1,10 +1,26 @@
 # -*- coding: utf-8 -*-
+
+"""
+Label
+=====
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+"""
+
 from kivy.lang import Builder
 from kivy.metrics import sp
 from kivy.properties import OptionProperty, DictProperty, ListProperty
 from kivy.uix.label import Label
+
 from kivymd.material_resources import DEVICE_TYPE
 from kivymd.theming import ThemableBehavior
+from kivymd.theming_dynamic_text import get_contrast_text_color
 
 Builder.load_string('''
 <MDLabel>
@@ -35,9 +51,13 @@ class MDLabel(ThemableBehavior, Label):
 
     theme_text_color = OptionProperty(None, allownone=True,
                                       options=['Primary', 'Secondary', 'Hint',
-                                               'Error', 'Custom'])
+                                               'Error', 'Custom',
+                                               'ContrastParentBackground']
+                                      )
 
     text_color = ListProperty(None, allownone=True)
+
+    parent_background = ListProperty(None, allownone=True)
 
     _currently_bound_property = {}
 
@@ -61,30 +81,28 @@ class MDLabel(ThemableBehavior, Label):
         op = self.opposite_colors
         setter = self.setter('color')
         t.unbind(**self._currently_bound_property)
-        c = {}
-        if value == 'Primary':
-            c = {'text_color' if not op else 'opposite_text_color': setter}
+        attr_name = {
+            'Primary': 'text_color' if not op else 'opposite_text_color',
+            'Secondary': 'secondary_text_color' if not op else
+            'opposite_secondary_text_color',
+            'Hint': 'disabled_hint_text_color' if not op else
+            'opposite_disabled_hint_text_color',
+            'Error': 'error_color',
+        }.get(value, None)
+        if attr_name:
+            c = {attr_name: setter}
             t.bind(**c)
-            self.color = t.text_color if not op else t.opposite_text_color
-        elif value == 'Secondary':
-            c = {'secondary_text_color' if not op else
-                 'opposite_secondary_text_color': setter}
-            t.bind(**c)
-            self.color = t.secondary_text_color if not op else \
-                t.opposite_secondary_text_color
-        elif value == 'Hint':
-            c = {'disabled_hint_text_color' if not op else
-                 'opposite_disabled_hint_text_color': setter}
-            t.bind(**c)
-            self.color = t.disabled_hint_text_color if not op else \
-                t.opposite_disabled_hint_text_color
-        elif value == 'Error':
-            c = {'error_color': setter}
-            t.bind(**c)
-            self.color = t.error_color
-        elif value == 'Custom':
-            self.color = self.text_color if self.text_color else (0, 0, 0, 1)
-        self._currently_bound_property = c
+            self._currently_bound_property = c
+            self.color = getattr(t, attr_name)
+        else:
+            # 'Custom' and 'ContrastParentBackground' lead here, as well as the
+            # generic None value it's not yet been set
+            if value == 'Custom' and self.text_color:
+                self.color = self.text_color
+            elif value == 'ContrastParentBackground' and self.parent_background:
+                self.color = get_contrast_text_color(self.parent_background)
+            else:
+                self.color = [0, 0, 0, 1]
 
     def on_text_color(self, *args):
         if self.theme_text_color == 'Custom':

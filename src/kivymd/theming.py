@@ -1,16 +1,33 @@
 # -*- coding: utf-8 -*-
+
+"""
+Theming
+=======
+
+Copyright © 2010-2018 HeaTTheatR
+
+For suggestions and questions:
+<kivydevelopment@gmail.com>
+
+This file is distributed under the terms of the same license,
+as the Kivy framework.
+
+`Material Design spec, Material theming <https://material.io/design/material-theming>`
+"""
+
 from kivy.app import App
 from kivy.core.text import LabelBase
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
-from kivy.properties import OptionProperty, AliasProperty, ObjectProperty, \
+from kivy.properties import OptionProperty, AliasProperty, ObjectProperty,\
     StringProperty, ListProperty, BooleanProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from kivy.atlas import Atlas
+
 from kivymd.color_definitions import colors
-from kivymd.material_resources import FONTS, DEVICE_TYPE
+from kivymd.material_resources import FONTS, DEVICE_TYPE, DEVICE_IOS
 from kivymd import images_path
 
 for font in FONTS:
@@ -252,10 +269,10 @@ class ThemeManager(Widget):
         theme_style = self._get_theme_style(opposite)
         if theme_style == 'Light':
             color = get_color_from_hex('000000')
-            color[3] = .26
+            color[3] = .38
         elif theme_style == 'Dark':
             color = get_color_from_hex('FFFFFF')
-            color[3] = .30
+            color[3] = .50
         return color
 
     disabled_hint_text_color = AliasProperty(_get_disabled_hint_text_color,
@@ -313,7 +330,7 @@ class ThemeManager(Widget):
     horizontal_margins = AliasProperty(_get_horizontal_margins)
 
     def on_theme_style(self, instance, value):
-        if hasattr(App.get_running_app(), 'theme_cls') and \
+        if hasattr(App.get_running_app(), 'theme_cls') and\
                         App.get_running_app().theme_cls == self:
             self.set_clearcolor_by_theme_style(value)
 
@@ -339,6 +356,7 @@ class ThemeManager(Widget):
 class ThemableBehavior(object):
     theme_cls = ObjectProperty(None)
     opposite_colors = BooleanProperty(False)
+    device_ios = DEVICE_IOS
 
     def __init__(self, **kwargs):
         if self.theme_cls is not None:
