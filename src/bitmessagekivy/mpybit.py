@@ -1,4 +1,3 @@
-import kivy_helper_search
 import os
 import queues
 import shutdown
@@ -9,16 +8,18 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
-from navigationdrawer import NavigationDrawer
 from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivymd.theming import ThemeManager
 from kivymd.toolbar import Toolbar
+
+from addresses import decodeAddress, addBMIfNotPresent
+from navigationdrawer import NavigationDrawer
 from bmconfigparser import BMConfigParser
 from helper_ackPayload import genAckPayload
-from addresses import decodeAddress, addBMIfNotPresent
 from helper_sql import sqlExecute
+import kivy_helper_search
 
 statusIconColor = 'red'
 
