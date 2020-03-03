@@ -9,7 +9,7 @@ def search_sql(xAddress="toaddress", account=None, folder="inbox", where=None, w
 
     if folder == "sent":
         sqlStatementBase = '''
-            SELECT toaddress, fromaddress, subject, status, ackdata, lastactiontime 
+            SELECT msgid, toaddress, fromaddress, subject, status, ackdata, lastactiontime 
             FROM sent '''
     else:
         sqlStatementBase = '''SELECT folder, msgid, toaddress, fromaddress, subject, received, read

@@ -233,7 +233,7 @@ class Sent(Screen):
                 'data_index': i,
                 'index': 1,
                 'height': 48,
-                'text': row[2]}
+                'text': row[3]}
                 for i, row in enumerate(queryreturn)
             ]
         else:
