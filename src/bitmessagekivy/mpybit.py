@@ -13,6 +13,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivymd.theming import ThemeManager
 from kivymd.toolbar import Toolbar
+from kivymd.toast import toast
 
 from addresses import decodeAddress, addBMIfNotPresent
 from navigationdrawer import NavigationDrawer
@@ -318,43 +319,47 @@ class Create(Screen):
             if recipient != '':
                 status, addressVersionNumber, streamNumber, ripe = decodeAddress(
                     recipient)
-                if status == 'success':
-                    recipient = addBMIfNotPresent(recipient)
+                if status != 'success':
+                    toast("address {} is invalid".format(recipient))
+                    return
 
-                    if addressVersionNumber > 4 or addressVersionNumber <= 1:
-                        print("addressVersionNumber > 4 or addressVersionNumber <= 1")
-                    if streamNumber > 1 or streamNumber == 0:
-                        print("streamNumber > 1 or streamNumber == 0")
-                    if statusIconColor == 'red':
-                        print("shared.statusIconColor == 'red'")
-                    stealthLevel = BMConfigParser().safeGetInt(
-                        'bitmessagesettings', 'ackstealthlevel')
-                    ackdata = genAckPayload(streamNumber, stealthLevel)
-                    t = ()
-                    sqlExecute(
-                        '''INSERT INTO sent VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-                        '',
-                        recipient,
-                        ripe,
-                        sender,
-                        subject,
-                        message,
-                        ackdata,
-                        int(time.time()),
-                        int(time.time()),
-                        0,
-                        'msgqueued',
-                        0,
-                        'sent',
-                        encoding,
-                        BMConfigParser().getint('bitmessagesettings', 'ttl'))
-                    toLabel = ''
-                    queues.workerQueue.put(('sendmessage', recipient))
-                    print("sqlExecute successfully #####    ##################")
-                    self.ids.message.text = ''
-                    self.ids.subject.text = ''
-                    self.ids.recipient.text = ''
-                    return None
+                recipient = addBMIfNotPresent(recipient)
+                if addressVersionNumber > 4 or addressVersionNumber <= 1:
+                    print("addressVersionNumber > 4 or addressVersionNumber <= 1")
+                if streamNumber > 1 or streamNumber == 0:
+                    print("streamNumber > 1 or streamNumber == 0")
+                if statusIconColor == 'red':
+                    print("shared.statusIconColor == 'red'")
+                stealthLevel = BMConfigParser().safeGetInt(
+                    'bitmessagesettings', 'ackstealthlevel')
+                ackdata = genAckPayload(streamNumber, stealthLevel)
+                t = ()
+                sqlExecute(
+                    '''INSERT INTO sent VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+                    '',
+                    recipient,
+                    ripe,
+                    sender,
+                    subject,
+                    message,
+                    ackdata,
+                    int(time.time()),
+                    int(time.time()),
+                    0,
+                    'msgqueued',
+                    0,
+                    'sent',
+                    encoding,
+                    BMConfigParser().getint('bitmessagesettings', 'ttl'))
+                toLabel = ''
+                queues.workerQueue.put(('sendmessage', recipient))
+                print("sqlExecute successfully #####    ##################")
+
+                toast("messge sent")
+                self.ids.message.text = ''
+                self.ids.subject.text = ''
+                self.ids.recipient.text = ''
+                return None
 
     def cancel(self):
         """Reset values for send message."""
