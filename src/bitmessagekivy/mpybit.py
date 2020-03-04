@@ -93,33 +93,19 @@ class NavigateApp(App, TextInput):
 
     def _remove(self, data_index):
         """It will remove message by resetting the values in recycleview data."""
-        if self.root.ids.scr_mngr.current == 'inbox':
-            self.root.ids.sc1.data.pop(data_index)
-            self.root.ids.sc1.data = [{
-                'data_index': i,
-                'index': d['index'],
-                'height': d['height'],
-                'text': d['text']}
-                for i, d in enumerate(self.root.ids.sc1.data)
-            ]
-        elif self.root.ids.scr_mngr.current == 'sent':
-            self.root.ids.sc2.data.pop(data_index)
-            self.root.ids.sc2.data = [{
-                'data_index': i,
-                'index': d['index'],
-                'height': d['height'],
-                'text': d['text']}
-                for i, d in enumerate(self.root.ids.sc2.data)
-            ]
-        elif self.root.ids.scr_mngr.current == 'trash':
-            self.root.ids.sc3.data.pop(data_index)
-            self.root.ids.sc3.data = [{
-                'data_index': i,
-                'index': d['index'],
-                'height': d['height'],
-                'text': d['text']}
-                for i, d in enumerate(self.root.ids.sc3.data)
-            ]
+        screen = {
+            'inbox': self.root.ids.sc1,
+            'sent': self.root.ids.sc2,
+            'trash': self.root.ids.sc3,
+        }[self.root.ids.scr_mngr.current]
+        screen.data.pop(data_index)
+        screen.data = [{
+            'data_index': i,
+            'index': d['index'],
+            'height': d['height'],
+            'text': d['text']}
+            for i, d in enumerate(self.root.ids.sc1.data)
+        ]
 
     def getInboxMessageDetail(self, instance):
         """It will get message detail after make selected message description."""
