@@ -309,7 +309,7 @@ class NewIdentity(Screen):
 
     def generateaddress(self):
         """Generate new address."""
-        if self.checked == 'use a random number generator to make an address':
+        if self.checked == 'random':
             queues.apiAddressGeneratorReturnQueue.queue.clear()
             streamNumberForAddress = 1
             label = self.ids.label.text

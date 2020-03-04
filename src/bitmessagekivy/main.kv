@@ -4,6 +4,9 @@
 #:import C kivy.utils.get_color_from_hex
 #:import TwoLineAvatarListItem kivymd.list.TwoLineAvatarListItem
 #:import MDTextButton kivymd.button.MDTextButton
+#:import MDCheckbox kivymd.selectioncontrols.MDCheckbox
+#:import MDLabel kivymd.label.MDLabel
+#:import MDTextField kivymd.textfields.MDTextField
 
 
 <Navigator>:
@@ -202,62 +205,37 @@ BoxLayout:
     GridLayout:
         padding: '120dp'
         cols: 1
-        Label:
+        MDLabel:
             text:"""Here you may generate as many addresses as you like. Indeed, creating and abandoning addresses is encouraged."""
-            line_height:1.5  
-            text_size:(700,None)  
-            color: 0,0,0,1
+            line_height:1.5
+            text_size:(700,None)
         BoxLayout:
-            CheckBox:
-                canvas.before:
-                    Color:
-                        rgb: 1,0,0
-                    Ellipse:
-                        pos:self.center_x-8, self.center_y-8
-                        size:[16,16]
+            MDCheckbox:
                 group: "money"
-                id:chk
-                text:"use a random number generator to make an address"
-                on_active:
-                    root.checked = self.text
-                active:root.is_active
-
-            Label:
+                name: "random"
+                on_release:
+                    root.checked = self.name
+            MDLabel:
                 text: "use a random number generator to make an address"
-                color: 0,0,0,1
         BoxLayout:
-            CheckBox:
-                canvas.before:
-                    Color:
-                        rgb: 1,0,0
-                    Ellipse:
-                        pos:self.center_x-8, self.center_y-8
-                        size:[16,16] 
+            MDCheckbox:
                 group: "money"
-                id:chk
-                text:"use a pseudo number generator to make an address"
-                on_active:
-                    root.checked = self.text
-                active:not root.is_active
-            Label:
+                name: 'pseudorandom'
+                on_release:
+                    root.checked = self.name
+            MDLabel:
                 text: "use a pseudo number generator to make an address"
-                color: 0,0,0,1
-        Label:
-            color: 0,0,0,1
+        MDLabel:
             size_hint_x: .35
             markup: True
             text: "[b]{}[/b]".format("Randomly generated addresses")
         BoxLayout:
             size_hint_y: None
             height: '32dp'
-            Label:
-                text: "Label (not shown to anyone except you)"
-                color: 0,0,0,1
-        BoxLayout:
-            size_hint_y: None
-            height: '32dp'
-            TextInput:
+            MDTextField:
                 id: label
+                hint_text: "Label (not shown to anyone except you)"
+
 
     Button:
         text: 'Cancel'
