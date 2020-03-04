@@ -53,9 +53,6 @@ class NavigateApp(App, TextInput):
         self.root.ids.sc3.add_widget(Trash())
         self.root.ids.toolbar.title = BMConfigParser().get(
             state.association, 'label') + '({})'.format(state.association)
-        Inbox()
-        Sent()
-        Trash()
 
     def say_exit(self):
         """Exit the application as uses shutdown PyBitmessage."""
