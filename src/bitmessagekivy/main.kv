@@ -41,6 +41,7 @@ BoxLayout:
         title: app.getCurrentAccount()
         background_color: app.theme_cls.primary_dark
         left_action_items: [['menu', lambda x: app.nav_drawer.toggle()]]
+        right_action_items: [['plus', lambda x: app.createMessage()]]
         Button:
             text:"EXIT"
             color: 0,0,0,1
@@ -69,20 +70,6 @@ BoxLayout:
             id:sc8
         AddressSuccessful:
             id:sc9
-
-    Button:
-        id:create
-        height:100
-        size_hint_y: 0.13
-        size_hint_x: 0.1
-        pos_hint: {'x': 0.85, 'y': 0.5}
-        background_color: (0,0,0,0)
-        on_press: scr_mngr.current = 'create'
-        Image:
-            source: 'images/plus.png'
-            y: self.parent.y - 7.5
-            x: self.parent.x + self.parent.width - 50
-            size: 70, 70
 
 <SwipeButton@Carousel>:
     text: ''
