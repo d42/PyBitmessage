@@ -137,47 +137,78 @@ class Navigator(NavigationDrawer):
     title = StringProperty('Navigation')
 
 
-class Inbox(Screen):
-    """Inbox Screen uses screen to show widgets of screens."""
-
+class MessageScreen(Screen):
     data = ListProperty()
-
     def __init__(self, *args, **kwargs):
-        super(Inbox, self).__init__(*args, **kwargs)
+        super(MessageScreen, self).__init__(*args, **kwargs)
         if state.association == '':
             state.association = Navigator().ids.btn.text
         Clock.schedule_once(self.init_ui, 0)
-
     def init_ui(self, dt=0):
-        """Clock Schdule for method inbox accounts."""
-        self.inboxaccounts()
-        print(dt)
+        self.screenInit()
 
-    def inboxaccounts(self):
-        """Load inbox accounts."""
+    def screenInit(self):
         account = state.association
         self.loadMessagelist(account, 'All', '')
 
+
     def loadMessagelist(self, account, where="", what=""):
-        """Load Inbox list for inbox messages."""
-        xAddress = "toaddress"
         queryreturn = kivy_helper_search.search_sql(
-            xAddress, account, 'inbox', where, what, False)
-        if queryreturn:
-            self.data = [{
-                'data_index': i,
-                'index': 1,
-                'height': 48,
-                'text': row[4]}
-                for i, row in enumerate(queryreturn)
-            ]
-        else:
+            self.xAddress, account, self.box, where, what, False)
+        if not queryreturn:
             self.data = [{
                 'data_index': 1,
                 'index': 1,
+                'address': "ebin",
                 'height': 48,
                 'text': "No incoming for this account."}
             ]
+            return
+        self.data = [self.parse_row(i, r) for i, r in enumerate(queryreturn)]
+
+
+
+class Inbox(MessageScreen):
+    box = "inbox"
+    xAddress = "toaddress"
+
+    def parse_row(self, i, row):
+        return {
+            'data_index': i,
+            'index': 1,
+            "address": row[3],
+            "msgid": row[1],
+            'height': 48,
+            'text': row[4]
+        }
+
+class Sent(MessageScreen):
+    box = 'sent'
+    xAddress = 'fromaddress'
+
+    def parse_row(self, i, row):
+        return {
+            'data_index': i,
+            'index': 1,
+            'height': 48,
+            'address': row[2],
+            'msgid': row[1],
+            'text': row[3]
+        }
+
+class Trash(MessageScreen):
+    box = 'trash'
+    xAddress = 'toaddress'
+
+    def parse_row(self, i, row):
+        return {
+            'data_index': i,
+            'index': 1,
+            'msgid': row[1],
+            'height': 48,
+            'text': row[4]
+        }
+
 
 
 class Message(Screen):
@@ -186,92 +217,6 @@ class Message(Screen):
 
 class AddressSuccessful(Screen):
     pass
-
-
-class Sent(Screen):
-    """Sent Screen uses screen to show widgets of screens."""
-
-    data = ListProperty()
-
-    def __init__(self, *args, **kwargs):
-        super(Sent, self).__init__(*args, **kwargs)
-        if state.association == '':
-            state.association = Navigator().ids.btn.text
-        Clock.schedule_once(self.init_ui, 0)
-
-    def init_ui(self, dt=0):
-        """Clock Schdule for method sent accounts."""
-        self.sentaccounts()
-        print(dt)
-
-    def sentaccounts(self):
-        """Load sent accounts."""
-        account = state.association
-        self.loadSent(account, 'All', '')
-
-    def loadSent(self, account, where="", what=""):
-        """Load Sent list for Sent messages."""
-        xAddress = 'fromaddress'
-        queryreturn = kivy_helper_search.search_sql(
-            xAddress, account, "sent", where, what, False)
-        if queryreturn:
-            self.data = [{
-                'data_index': i,
-                'index': 1,
-                'height': 48,
-                'text': row[3]}
-                for i, row in enumerate(queryreturn)
-            ]
-        else:
-            self.data = [{
-                'data_index': 1,
-                'index': 1,
-                'height': 48,
-                'text': "No sent messages for this account"}
-            ]
-
-
-class Trash(Screen):
-    """Trash Screen uses screen to show widgets of screens."""
-
-    data = ListProperty()
-
-    def __init__(self, *args, **kwargs):
-        super(Trash, self).__init__(*args, **kwargs)
-        if state.association == '':
-            state.association = Navigator().ids.btn.text
-        Clock.schedule_once(self.init_ui, 0)
-
-    def init_ui(self, dt=0):
-        """Clock Schdule for method inbox accounts."""
-        self.inboxaccounts()
-        print(dt)
-
-    def inboxaccounts(self):
-        """Load inbox accounts."""
-        account = state.association
-        self.loadTrashlist(account, 'All', '')
-
-    def loadTrashlist(self, account, where="", what=""):
-        """Load Trash list for trashed messages."""
-        xAddress = "toaddress"
-        queryreturn = kivy_helper_search.search_sql(
-            xAddress, account, 'trash', where, what, False)
-        if queryreturn:
-            self.data = [{
-                'data_index': i,
-                'index': 1,
-                'height': 48,
-                'text': row[4]}
-                for i, row in enumerate(queryreturn)
-            ]
-        else:
-            self.data = [{
-                'data_index': 1,
-                'index': 1,
-                'height': 48,
-                'text': "No deleted messages for this account"}
-            ]
 
 
 class Dialog(Screen):
