@@ -88,50 +88,27 @@ BoxLayout:
         text: 'archive'
         on_press: app.archive(root.data_index)
 
-<Inbox>:
+<MessageScreen>:
+    RecycleView:
+        data: root.data
+        viewclass: 'SwipeButton'
+        do_scroll_x: False
+        scroll_timeout: 100
+
+        RecycleBoxLayout:
+            id:rc
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            default_size_hint: 1, None
+
+<Inbox@MessageScreen>:
     name: 'inbox'
-    RecycleView:
-        data: root.data
-        viewclass: 'SwipeButton'
-        do_scroll_x: False
-        scroll_timeout: 100
 
-        RecycleBoxLayout:
-            id:rc
-            orientation: 'vertical'
-            size_hint_y: None
-            height: self.minimum_height
-            default_size_hint: 1, None
-
-<Sent>:
+<Sent@MessageScreen>:
     name: 'sent'
-    RecycleView:
-        data: root.data
-        viewclass: 'SwipeButton'
-        do_scroll_x: False
-        scroll_timeout: 100
-
-        RecycleBoxLayout:
-            id:rc
-            orientation: 'vertical'
-            size_hint_y: None
-            height: self.minimum_height
-            default_size_hint: 1, None
-
-<Trash>:
+<Trash@MessageScreen>:
     name: 'trash'
-    RecycleView:
-        data: root.data
-        viewclass: 'SwipeButton'
-        do_scroll_x: False
-        scroll_timeout: 100
-
-        RecycleBoxLayout:
-            id:rc
-            orientation: 'vertical'
-            size_hint_y: None
-            height: self.minimum_height
-            default_size_hint: 1, None
 
 <Create>:
     name: 'create'
