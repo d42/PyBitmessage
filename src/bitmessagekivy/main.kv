@@ -72,8 +72,6 @@ BoxLayout:
     data_index: 0
     min_move: 20 / self.width
 
-    on__offset: app.update_index(root.data_index, self.index)
-
     Button:
         text: 'delete ({}:{})'.format(root.text, root.data_index)
         on_press: app.delete(root.msgid)
