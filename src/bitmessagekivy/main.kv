@@ -1,6 +1,10 @@
 #:import factory kivy.factory
+#:import Toolbar kivymd.toolbar.Toolbar
 #:import mpybit bitmessagekivy.mpybit
 #:import C kivy.utils.get_color_from_hex
+#:import TwoLineAvatarListItem kivymd.list.TwoLineAvatarListItem
+#:import MDTextButton kivymd.button.MDTextButton
+
 
 <Navigator>:
     id: nav_drawer
@@ -42,36 +46,25 @@ BoxLayout:
         background_color: app.theme_cls.primary_dark
         left_action_items: [['menu', lambda x: app.nav_drawer.toggle()]]
         right_action_items: [['plus', lambda x: app.createMessage()]]
-        Button:
-            text:"EXIT"
-            color: 0,0,0,1
-            background_color: (0,0,0,0)
-            size_hint_y: 0.4
-            size_hint_x: 0.1
-            pos_hint: {'x': 0.8, 'y':0.4}
-            on_press: app.say_exit()
-
 
     ScreenManager:
         id: scr_mngr
         Inbox:
-            id:sc1
+            id: inbox
         Sent:
-            id:sc2
+            id: sent
         Trash:
-            id:sc3
-        Dialog:
-            id:sc4
+            id: trash
         Create:
-            id:sc6
+            id: create
         NewIdentity:
-            id:sc7
+            id: new_identity
         Message:
-            id:sc8
+            id: message
         AddressSuccessful:
-            id:sc9
+            id: add_success
 
-<SwipeButton@Carousel>:
+<SwipeButton>:
     text: ''
     size_hint_y: None
     height: 48
@@ -81,24 +74,14 @@ BoxLayout:
 
     on__offset: app.update_index(root.data_index, self.index)
 
-    canvas.before:
-        Color:
-            rgba: C('FFFFFF33')
-
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
-        Line:
-            rectangle: self.pos + self.size
-
     Button:
         text: 'delete ({}:{})'.format(root.text, root.data_index)
-        on_press: app.delete(root.data_index)
+        on_press: app.delete(root.msgid)
 
-    Button:
+    TwoLineAvatarListItem:
         text: root.text
-        on_press: app.getInboxMessageDetail(self.text)
+        secondary_text: root.address
+        on_press: app.getInboxMessageDetail(root.msgid)
 
     Button:
         text: 'archive'
@@ -118,12 +101,6 @@ BoxLayout:
             size_hint_y: None
             height: self.minimum_height
             default_size_hint: 1, None
-            canvas.before:
-                Color:
-                    rgba: 0,0,0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
 
 <Sent>:
     name: 'sent'
@@ -139,12 +116,6 @@ BoxLayout:
             size_hint_y: None
             height: self.minimum_height
             default_size_hint: 1, None
-            canvas.before:
-                Color:
-                    rgba: 0,0,0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
 
 <Trash>:
     name: 'trash'
@@ -160,18 +131,6 @@ BoxLayout:
             size_hint_y: None
             height: self.minimum_height
             default_size_hint: 1, None
-            canvas.before:
-                Color:
-                    rgba: 0,0,0, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-
-<Dialog>:
-    name: 'dialog'
-    Label:
-        text:"I have a good dialox box"
-        color: 0,0,0,1
 
 <Create>:
     name: 'create'
@@ -257,7 +216,7 @@ BoxLayout:
                         rgb: 1,0,0
                     Ellipse:
                         pos:self.center_x-8, self.center_y-8
-                        size:[16,16]                 
+                        size:[16,16]
                 group: "money"
                 id:chk
                 text:"use a random number generator to make an address"
@@ -318,7 +277,9 @@ BoxLayout:
 
 <Message>:
     name: 'message'
+    id: message
     Label:
+        id: ebin
         text: 'I am on description of my email yooooo'
         color: 0,0,0,1
 

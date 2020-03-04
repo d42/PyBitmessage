@@ -11,8 +11,8 @@ from kivy.clock import Clock
 from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
+from kivy.uix.carousel import Carousel
 from kivymd.theming import ThemeManager
-from kivymd.toolbar import Toolbar
 from kivymd.toast import toast
 
 from addresses import decodeAddress, addBMIfNotPresent
@@ -21,8 +21,14 @@ from bmconfigparser import BMConfigParser
 from helper_ackPayload import genAckPayload
 from helper_sql import sqlExecute
 import kivy_helper_search
+import helper_inbox
 
 statusIconColor = 'red'
+
+
+class SwipeButton(Carousel):
+    msgid = StringProperty()
+    address = StringProperty()
 
 
 class NavigateApp(App, TextInput):
@@ -45,12 +51,12 @@ class NavigateApp(App, TextInput):
     def getCurrentAccountData(self, text):
         """Get Current Address Account Data."""
         state.association = text
-        self.root.ids.sc1.clear_widgets()
-        self.root.ids.sc2.clear_widgets()
-        self.root.ids.sc3.clear_widgets()
-        self.root.ids.sc1.add_widget(Inbox())
-        self.root.ids.sc2.add_widget(Sent())
-        self.root.ids.sc3.add_widget(Trash())
+        self.root.ids.inbox.clear_widgets()
+        self.root.ids.sent.clear_widgets()
+        self.root.ids.trash.clear_widgets()
+        self.root.ids.inbox.add_widget(Inbox())
+        self.root.ids.sent.add_widget(Sent())
+        self.root.ids.trash.add_widget(Trash())
         self.root.ids.toolbar.title = BMConfigParser().get(
             state.association, 'label') + '({})'.format(state.association)
 
@@ -72,45 +78,42 @@ class NavigateApp(App, TextInput):
     def update_index(self, data_index, index):
         """Update index after archieve message to trash."""
         if self.root.ids.scr_mngr.current == 'inbox':
-            self.root.ids.sc1.data[data_index]['index'] = index
+            self.root.ids.inbox.data[data_index]['index'] = index
         elif self.root.ids.scr_mngr.current == 'sent':
-            self.root.ids.sc2.data[data_index]['index'] = index
+            self.root.ids.sent.data[data_index]['index'] = index
         elif self.root.ids.scr_mngr.current == 'trash':
-            self.root.ids.sc3.data[data_index]['index'] = index
+            self.root.ids.trash.data[data_index]['index'] = index
 
-    def delete(self, data_index):
+    def delete(self, msgid):
         """It will make delete using remove function."""
-        print("delete {}".format(data_index))
-        self._remove(data_index)
+        print("delete {}".format(msgid))
+        helper_inbox.trash(msgid)
+        self._update()
 
-    def archive(self, data_index):
+    def archive(self, msgid):
         """It will make archieve using remove function."""
-        print("archive {}".format(data_index))
-        self._remove(data_index)
+        print("archive {}".format(msgid))
+        self._update()
 
     def _remove(self, data_index):
         """It will remove message by resetting the values in recycleview data."""
-        screen = {
-            'inbox': self.root.ids.sc1,
-            'sent': self.root.ids.sc2,
-            'trash': self.root.ids.sc3,
-        }[self.root.ids.scr_mngr.current]
-        screen.data.pop(data_index)
-        screen.data = [{
-            'data_index': i,
-            'index': d['index'],
-            'height': d['height'],
-            'text': d['text']}
-            for i, d in enumerate(self.root.ids.sc1.data)
-        ]
 
-    def getInboxMessageDetail(self, instance):
+    def _update(self):
+        screen = {
+            'inbox': self.root.ids.inbox,
+            'sent': self.root.ids.sent,
+            'trash': self.root.ids.trash,
+        }[self.root.ids.scr_mngr.current]
+        screen.screenInit()
+
+
+    def getInboxMessageDetail(self, msgid):
         """It will get message detail after make selected message description."""
-        try:
-            self.root.ids.scr_mngr.current = 'page'
-        except AttributeError:
-            self.parent.manager.current = 'page'
-        print('Message Clicked {}'.format(instance))
+        self.root.ids.message.text = "message text"
+        self.root.ids.scr_mngr.current = 'message'
+
+    def createMessage(self):
+        self.root.ids.scr_mngr.current = 'create'
 
     @staticmethod
     def getCurrentAccount():
@@ -189,7 +192,7 @@ class Sent(MessageScreen):
             'index': 1,
             'height': 48,
             'address': row[2],
-            'msgid': row[1],
+            'msgid': row[0],
             'text': row[3]
         }
 
@@ -201,7 +204,7 @@ class Trash(MessageScreen):
         return {
             'data_index': i,
             'index': 1,
-            'msgid': row[1],
+            'msgid': row[0],
             'height': 48,
             'text': row[4]
         }
