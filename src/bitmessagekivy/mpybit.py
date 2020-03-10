@@ -156,13 +156,7 @@ class MessageScreen(Screen):
         queryreturn = kivy_helper_search.search_sql(
             self.xAddress, account, self.box, where, what, False)
         if not queryreturn:
-            self.data = [{
-                'data_index': 1,
-                'index': 1,
-                'address': "ebin",
-                'height': 48,
-                'text': "No incoming for this account."}
-            ]
+            self.data = []
             return
         self.data = [self.parse_row(i, r) for i, r in enumerate(queryreturn)]
 
@@ -171,6 +165,7 @@ class MessageScreen(Screen):
 class Inbox(MessageScreen):
     box = "inbox"
     xAddress = "toaddress"
+    empty_label_text = StringProperty('No incoming messages')
 
     def parse_row(self, i, row):
         return {
@@ -185,6 +180,7 @@ class Inbox(MessageScreen):
 class Sent(MessageScreen):
     box = 'sent'
     xAddress = 'fromaddress'
+    empty_label_text = StringProperty('No sent messages')
 
     def parse_row(self, i, row):
         return {
@@ -199,6 +195,7 @@ class Sent(MessageScreen):
 class Trash(MessageScreen):
     box = 'trash'
     xAddress = 'toaddress'
+    empty_label_text = StringProperty('No deleted messages')
 
     def parse_row(self, i, row):
         return {

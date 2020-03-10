@@ -89,6 +89,12 @@ BoxLayout:
         on_press: app.archive(root.data_index)
 
 <MessageScreen>:
+    MDLabel:
+        id: empty_label
+        text: root.empty_label_text
+        halign: 'center'
+        valign: 'center'
+        size_hint_y: 0 if root.data else 1
     RecycleView:
         data: root.data
         viewclass: 'SwipeButton'
@@ -99,7 +105,7 @@ BoxLayout:
             id:rc
             orientation: 'vertical'
             size_hint_y: None
-            height: self.minimum_height
+            height: self.minimum_height if root.data else 0
             default_size_hint: 1, None
 
 <Inbox@MessageScreen>:
